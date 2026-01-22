@@ -115,34 +115,54 @@ const SCENARIOS = [
   }
 ];
 
-const ScenarioProfile = ({ data }: { data: any }) => (
-  <div className="relative bg-[#fefcf0] border-2 border-gray-300 p-6 shadow-md min-h-[400px] flex flex-col">
-    {/* PASS/FAIL STAMP */}
-    <div className={`absolute top-4 right-4 border-4 px-4 py-2 font-black text-3xl rotate-12 opacity-80 ${data.status === 'PASS' ? 'border-green-600 text-green-600' : 'border-red-600 text-red-600'}`}>
-      {data.status}
-    </div>
+const SKIN_TONES = ['#fbd38d', '#f7c4a1', '#e2a77f', '#a07151', '#6b4433'];
+const HAIR_COLORS = ['#2d3748', '#4a5568', '#744210', '#b7791f', '#000000', '#718096'];
 
-    <div className="flex gap-4 mb-6">
-      {/* Blurred Avatar */}
-      <div className="w-16 h-16 bg-gray-200 rounded-full blur-[2px] flex-shrink-0 border border-gray-400" />
-      <div>
-        <h3 className="text-xl font-bold uppercase underline decoration-gray-400">{data.name}</h3>
-        <p className="text-xs text-gray-500 font-mono">FORM IMM-5292 (SIMULATED)</p>
+const ScenarioProfile = ({ data }: { data: any }) => {
+  const randomSkin = SKIN_TONES[Math.floor(Math.random() * SKIN_TONES.length)];
+  const randomHair = HAIR_COLORS[Math.floor(Math.random() * HAIR_COLORS.length)];
+
+  return (
+    <div className="relative bg-[#fefcf0] border-2 border-gray-300 p-6 shadow-md min-h-[400px] flex flex-col">
+      {/* PASS/FAIL STAMP */}
+      <div className={`absolute top-4 right-4 border-4 px-4 py-2 font-black text-3xl rotate-12 opacity-80 z-10 ${data.status === 'PASS' ? 'border-green-600 text-green-600' : 'border-red-600 text-red-600'}`}>
+        {data.status}
+      </div>
+
+      <div className="flex gap-4 mb-6">
+        {/* Cartoon Human Headshot with Randomized Colors */}
+        <div className="w-16 h-16 bg-white rounded-full flex-shrink-0 border border-gray-400 overflow-hidden relative">
+          <svg viewBox="0 0 100 100" className="w-full h-full">
+            <circle cx="50" cy="50" r="50" fill="#f1f5f9" /> {/* Background Circle */}
+            <path d="M20,95 Q50,70 80,95" fill="#4a5568" /> {/* Torso */}
+            <rect x="45" y="65" width="10" height="10" fill={randomSkin} /> {/* Neck */}
+            <path d="M35,35 Q35,20 50,20 Q65,20 65,35 L65,55 Q65,75 50,75 Q35,75 35,55 Z" fill={randomSkin} /> {/* Face */}
+            <path d="M35,35 Q35,15 50,15 Q65,15 65,35 Q65,25 50,25 Q35,25 35,35" fill={randomHair} /> {/* Hair */}
+            <circle cx="43" cy="45" r="2" fill="#1a202c" /> {/* Eye L */}
+            <circle cx="57" cy="45" r="2" fill="#1a202c" /> {/* Eye R */}
+            <path d="M45,60 Q50,63 55,60" stroke="#1a202c" strokeWidth="1" fill="none" /> {/* Mouth */}
+          </svg>
+        </div>
+        
+        <div>
+          <h3 className="text-xl font-bold uppercase underline decoration-gray-400">{data.name}</h3>
+          <p className="text-xs text-gray-500 font-mono">FORM IMM-5292 (SIMULATED)</p>
+        </div>
+      </div>
+
+      <div className="space-y-3 font-mono text-sm flex-1">
+        <div className="border-b border-gray-200 pb-1"><strong>AGE:</strong> {data.age}</div>
+        <div className="border-b border-gray-200 pb-1"><strong>EDUCATION:</strong> {data.edu}</div>
+        <div className="border-b border-gray-200 pb-1"><strong>LANGUAGES:</strong> {data.lang}</div>
+        <div className="border-b border-gray-200 pb-1"><strong>EXP:</strong> {data.exp}</div>
+        <div className="mt-4 p-2 bg-gray-100 rounded text-center">
+          <span className="text-lg font-bold">CRS SCORE: {data.crs}</span>
+        </div>
+        <p className="text-xs italic text-gray-600 mt-4 leading-tight">{data.detail}</p>
       </div>
     </div>
-
-    <div className="space-y-3 font-mono text-sm flex-1">
-      <div className="border-b border-gray-200 pb-1"><strong>AGE:</strong> {data.age}</div>
-      <div className="border-b border-gray-200 pb-1"><strong>EDUCATION:</strong> {data.edu}</div>
-      <div className="border-b border-gray-200 pb-1"><strong>LANGUAGES:</strong> {data.lang}</div>
-      <div className="border-b border-gray-200 pb-1"><strong>EXP:</strong> {data.exp}</div>
-      <div className="mt-4 p-2 bg-gray-100 rounded text-center">
-        <span className="text-lg font-bold">CRS SCORE: {data.crs}</span>
-      </div>
-      <p className="text-xs italic text-gray-600 mt-4 leading-tight">{data.detail}</p>
-    </div>
-  </div>
-);
+  );
+};
 
 type Scene = 'intro' | 'scenarios' |'interview' | 'thinking' | 'result';
 const initialScene: Scene = 'intro';
@@ -422,32 +442,6 @@ export default function App() {
 
   const [stamp, setStamp] = useState<'PASS' | 'FAIL' | null>(null); 
 
-  {scene === 'scenarios' && selectedScenario === null && (
-    <div className="space-y-6">
-      <button onClick={() => setScene('intro')} className="text-sm font-bold text-gray-500 hover:underline">← BACK TO HOME</button>
-      <h1 className="text-2xl font-bold text-[#1a202c]">Real-Life Comparison Scenarios</h1>
-      <div className="grid gap-4">
-        {SCENARIOS.map((s, idx) => (
-          <button key={idx} onClick={() => setSelectedScenario(idx)} className="p-4 border-2 border-[#cbd5e0] rounded-xl text-left hover:border-[#1a202c] transition bg-white shadow-sm">
-            <h2 className="font-bold text-lg">{s.title}</h2>
-            <p className="text-sm text-gray-600">{s.description}</p>
-          </button>
-        ))}
-      </div>
-    </div> 
-  )};
-
-  {scene === 'scenarios' && selectedScenario !== null && (
-    <div className="space-y-6">
-      <button onClick={() => setSelectedScenario(null)} className="text-sm font-bold text-gray-500 hover:underline">← BACK TO MENU</button>
-      <div className="grid md:grid-cols-2 gap-6">
-        {SCENARIOS[selectedScenario].profiles.map((p, idx) => (
-          <ScenarioProfile key={idx} data={p} />
-        ))}
-      </div>
-    </div>
-  )};
-
   useEffect(() => {
     if (scene === 'interview') {
       setIsTalking(true);
@@ -719,6 +713,58 @@ export default function App() {
 
   // --- RENDERERS ---
 
+  if (scene === 'scenarios' && selectedScenario === null) { 
+    return (
+        <div className="flex flex-col items-center justify-center w-full max-w-2xl mx-auto py-8">
+    <div className="w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+      {/* Header Bar */}
+      <div className="bg-[#6e2e2e] p-6 text-center">
+        <h1 className="text-2xl font-bold text-white tracking-tight">Real-Life PR Scenarios</h1>
+        <p className="text-gray-400 text-sm mt-1">2025 Express Entry Comparisons</p>
+      </div>
+
+      <div className="p-8 space-y-4">
+        {SCENARIOS.map((s, idx) => (
+          <button 
+            key={idx} 
+            onClick={() => setSelectedScenario(idx)} 
+            className="group w-full flex items-center justify-between p-5 border-2 border-gray-100 rounded-xl text-left hover:border-[#6e2e2e] hover:bg-red-50/30 transition-all duration-200"
+          >
+            <div>
+              <h2 className="font-bold text-[#1a202c] group-hover:text-[#6e2e2e] transition-colors">{s.title}</h2>
+              <p className="text-sm text-gray-500 mt-1 line-clamp-1">{s.description}</p>
+            </div>
+            <span className="text-gray-300 group-hover:text-[#6e2e2e] text-xl font-bold">→</span>
+          </button>
+        ))}
+
+        <div className="pt-6 border-t border-gray-100 mt-6">
+          <button 
+            onClick={() => setScene('intro')} 
+            className="w-full py-3 text-sm font-bold text-gray-500 hover:text-[#1a202c] transition-colors uppercase tracking-widest"
+          >
+            ← Back to Main Menu
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+      );
+    }
+
+  if (scene === 'scenarios' && selectedScenario !== null) {  
+    return (
+      <div className="bg-white p-8 rounded-xl shadow-2xl space-y-6">
+        <button onClick={() => setSelectedScenario(null)} className="text-sm font-bold text-gray-500 hover:underline">← BACK TO MENU</button>
+          <div className="grid md:grid-cols-2 gap-6">
+            {SCENARIOS[selectedScenario].profiles.map((p, idx) => (
+              <ScenarioProfile key={idx} data={p} />
+            ))}
+          </div>
+        </div>
+      );
+    }
+    
   if (scene === 'intro') {
     return (
         <div className="min-h-screen bg-[#6e2e2e] flex flex-col items-center justify-center p-6 font-sans">
