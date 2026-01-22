@@ -88,7 +88,63 @@ const initialProfile: UserProfile = {
   spouseEnglish: { speak: 0, listen: 0, read: 0, write: 0 },
 };
 
-type Scene = 'intro' | 'interview' | 'thinking' | 'result';
+const SCENARIOS = [
+  {
+    title: "Mega Francophone vs. Tiny CEC",
+    description: "Comparing the massive 2025 French draws against the highly competitive CEC draws.",
+    profiles: [
+      { name: "Profile A (Francophone)", age: 65, edu: "2-year Diploma", lang: "Fluent French", exp: "6yr Foreign", crs: 383, status: "PASS", detail: "Qualified via Francophone draw (379 cutoff)." },
+      { name: "Profile B (CEC)", age: 26, edu: "Cdn Bachelor's", lang: "Fluent English", exp: "3yr Canada", crs: 525, status: "FAIL", detail: "Missed May CEC draw (547 cutoff)." }
+    ]
+  },
+  {
+    title: "Average French vs. Average CEC",
+    description: "Two different universes of point requirements.",
+    profiles: [
+      { name: "Profile A (French)", age: 30, edu: "1-year Cdn College", lang: "Fluent French", exp: "3yr Foreign", crs: 430, status: "PASS", detail: "Above 2025 French average (419)." },
+      { name: "Profile B (CEC)", age: 32, edu: "Cdn PhD", lang: "Fluent English", exp: "3yr Canada", crs: 527, status: "PASS", detail: "Qualified for several CEC draws." }
+    ]
+  },
+  {
+    title: "Healthcare: Cashier vs. Doctor",
+    description: "How the healthcare category treats different skill levels.",
+    profiles: [
+      { name: "Pharmacy Cashier", age: 25, edu: "2-year Cdn College", lang: "Perfect English", exp: "3yr Canada", crs: 473, status: "PASS", detail: "Qualified via Healthcare category draws." },
+      { name: "Foreign Doctor", age: 40, edu: "Masters/MD (US)", lang: "Fluent English", exp: "2yr Canada (LMIA)", crs: 474, status: "PASS", detail: "Only 1 point higher than the cashier." }
+    ]
+  }
+];
+
+const ScenarioProfile = ({ data }: { data: any }) => (
+  <div className="relative bg-[#fefcf0] border-2 border-gray-300 p-6 shadow-md min-h-[400px] flex flex-col">
+    {/* PASS/FAIL STAMP */}
+    <div className={`absolute top-4 right-4 border-4 px-4 py-2 font-black text-3xl rotate-12 opacity-80 ${data.status === 'PASS' ? 'border-green-600 text-green-600' : 'border-red-600 text-red-600'}`}>
+      {data.status}
+    </div>
+
+    <div className="flex gap-4 mb-6">
+      {/* Blurred Avatar */}
+      <div className="w-16 h-16 bg-gray-200 rounded-full blur-[2px] flex-shrink-0 border border-gray-400" />
+      <div>
+        <h3 className="text-xl font-bold uppercase underline decoration-gray-400">{data.name}</h3>
+        <p className="text-xs text-gray-500 font-mono">FORM IMM-5292 (SIMULATED)</p>
+      </div>
+    </div>
+
+    <div className="space-y-3 font-mono text-sm flex-1">
+      <div className="border-b border-gray-200 pb-1"><strong>AGE:</strong> {data.age}</div>
+      <div className="border-b border-gray-200 pb-1"><strong>EDUCATION:</strong> {data.edu}</div>
+      <div className="border-b border-gray-200 pb-1"><strong>LANGUAGES:</strong> {data.lang}</div>
+      <div className="border-b border-gray-200 pb-1"><strong>EXP:</strong> {data.exp}</div>
+      <div className="mt-4 p-2 bg-gray-100 rounded text-center">
+        <span className="text-lg font-bold">CRS SCORE: {data.crs}</span>
+      </div>
+      <p className="text-xs italic text-gray-600 mt-4 leading-tight">{data.detail}</p>
+    </div>
+  </div>
+);
+
+type Scene = 'intro' | 'scenarios' |'interview' | 'thinking' | 'result';
 const initialScene: Scene = 'intro';
 const initialScriptIndex = 0;
 
@@ -352,25 +408,53 @@ const ScoreRow = ({ label, points, max }: { label: string; points: number; max?:
 // --- SCENE MANAGER ---
 
 export default function App() {
-  const [scene, setScene] = useState<Scene>('intro'); // Using the defined Scene type
-  const [scriptIndex, setScriptIndex] = useState(initialScriptIndex); 
-  const [profile, setProfile] = useState<UserProfile>(initialProfile);
-  const [isTalking, setIsTalking] = useState(false);
-  const [canInput, setCanInput] = useState(false);
-  // Stamp can be 'PASS', 'FAIL', or null (cleared/not set)
-  const [stamp, setStamp] = useState<'PASS' | 'FAIL' | null>(null); 
-  
+  const [scene, setScene] = useState<Scene>('intro'); 
 
-  // This ensures the talking state is reset and triggered whenever the step changes.
+  const [scriptIndex, setScriptIndex] = useState(initialScriptIndex); 
+
+  const [selectedScenario, setSelectedScenario] = useState<number | null>(null);
+
+  const [profile, setProfile] = useState<UserProfile>(initialProfile);
+
+  const [isTalking, setIsTalking] = useState(false);
+
+  const [canInput, setCanInput] = useState(false);
+
+  const [stamp, setStamp] = useState<'PASS' | 'FAIL' | null>(null); 
+
+  {scene === 'scenarios' && selectedScenario === null && (
+    <div className="space-y-6">
+      <button onClick={() => setScene('intro')} className="text-sm font-bold text-gray-500 hover:underline">← BACK TO HOME</button>
+      <h1 className="text-2xl font-bold text-[#1a202c]">Real-Life Comparison Scenarios</h1>
+      <div className="grid gap-4">
+        {SCENARIOS.map((s, idx) => (
+          <button key={idx} onClick={() => setSelectedScenario(idx)} className="p-4 border-2 border-[#cbd5e0] rounded-xl text-left hover:border-[#1a202c] transition bg-white shadow-sm">
+            <h2 className="font-bold text-lg">{s.title}</h2>
+            <p className="text-sm text-gray-600">{s.description}</p>
+          </button>
+        ))}
+      </div>
+    </div> 
+  )};
+
+  {scene === 'scenarios' && selectedScenario !== null && (
+    <div className="space-y-6">
+      <button onClick={() => setSelectedScenario(null)} className="text-sm font-bold text-gray-500 hover:underline">← BACK TO MENU</button>
+      <div className="grid md:grid-cols-2 gap-6">
+        {SCENARIOS[selectedScenario].profiles.map((p, idx) => (
+          <ScenarioProfile key={idx} data={p} />
+        ))}
+      </div>
+    </div>
+  )};
+
   useEffect(() => {
     if (scene === 'interview') {
       setIsTalking(true);
     }
-
-    // Dependency is scriptIndex, so it runs every time we move to the next step.
   }, [scriptIndex, scene]);
 
-  // --- SCRIPT DEFINITION ---
+  // --- SCRIPT ---
   const SCRIPT: ScriptStep[] = [
     // 0: Intro
     {
@@ -646,12 +730,21 @@ export default function App() {
                 <p className="text-gray-800 text-xl font-bold mb-8">
                     "Let's pretend you're an immigrant to Canada in 2025. Would you be able to qualify for a Permanent Residency?"
                 </p>
+
                 <button 
                     onClick={handleStart}
                     className="w-full bg-[#6e2e2e] hover:bg-red-800 text-white font-bold py-4 text-xl tracking-widest uppercase transition-transform transform hover:scale-105"
                 >
                     Start Interview
                 </button>
+
+                <button 
+                  onClick={() => setScene('scenarios')} 
+                  className="w-full border-2 border-[#1a202c] text-[#1a202c] py-4 font-bold hover:bg-gray-100 tracking-widest uppercase transition-transform transform hover:scale-105"
+                >
+                  Or, look at some real-life examples
+                </button>
+                
             </div>
         </div>
     );
@@ -689,10 +782,10 @@ export default function App() {
   }
 
   if (scene === 'result') {
-      // Use the updated calculateScore function to get the detailed object
       const scoreData = calculateScore(profile);
+
       const score = scoreData.total;
-      
+
       const relevantDraws = DRAW_HISTORY.filter(d => {
           if(d.cat === 'General') return true;
           if(d.cat === profile.category) return true;
@@ -789,6 +882,16 @@ export default function App() {
                        >
                            Restart Interview
                        </button>
+                       <button 
+                              onClick={() => {
+                                setScriptIndex(0);
+                                setProfile(initialProfile);
+                                setScene('scenarios');
+                              }} 
+                              className="mt-4 w-full border-2 border-[#1a202c] text-[#1a202c] py-3 rounded font-bold"
+                            >
+                            Compare with Real Candidates
+                         </button>
                    </div>
 
                </div>
