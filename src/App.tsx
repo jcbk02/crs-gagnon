@@ -270,45 +270,52 @@ const calculateScore = (p: UserProfile): ScoreBreakdown => {
 
 // 1. OFFICER GAGNON AVATAR
 const OfficerGagnon = ({ talking }: { talking: boolean }) => (
-  <div className="relative w-48 h-48 md:w-64 md:h-64 flex-shrink-0 mx-auto border-b-4 border-gray-800">
-    <svg viewBox="0 0 200 200" className="w-full h-full drop-shadow-xl">
-      {/* Uniform */}
-      <path d="M40,180 Q100,220 160,180 L160,200 L40,200 Z" fill="#1a202c" />
-      <rect x="95" y="180" width="10" height="20" fill="#cbd5e0" />
-      <path d="M100,180 L100,200" stroke="#718096" strokeWidth="1" />
-      {/* Shoulders */}
-      <path d="M40,180 Q30,160 20,180 L20,200 L60,200 Z" fill="#2d3748" />
-      <path d="M160,180 Q170,160 180,180 L180,200 L140,200 Z" fill="#2d3748" />
-      
-      {/* Neck */}
-      <rect x="85" y="130" width="30" height="30" fill="#f6ad55" />
-      
-      {/* Head */}
-      <path d="M60,60 L140,60 L140,140 Q100,160 60,140 Z" fill="#f6ad55" />
-      
-      {/* Hat */}
-      <path d="M50,60 L150,60 L140,30 L60,30 Z" fill="#1a202c" />
-      <rect x="95" y="35" width="10" height="10" fill="#fbbf24" /> {/* Badge */}
-      <rect x="50" y="60" width="100" height="10" fill="#2d3748" /> {/* Brim */}
+  <div className="relative w-48 h-[202px] md:w-64 md:h-[266px] flex-shrink-0 mx-auto border-b-4 border-gray-800">
+    <svg viewBox="0 0 200 210" className="w-full h-full drop-shadow-xl">
+      {/* Neck */}
+      <rect x="85" y="140" width="30" height="30" fill="#f6ad55" />
+      
+      {/* Head */}
+      <path d="M60,70 L140,70 L140,150 Q100,170 60,150 Z" fill="#f6ad55" />
+      
+      {/* Hat */}
+      <path d="M50,70 L150,70 L140,40 L60,40 Z" fill="#1a202c" />
+      <rect x="95" y="45" width="10" height="10" fill="#fbbf24" /> 
+      <rect x="50" y="70" width="100" height="10" fill="#2d3748" /> 
 
-      {/* Face Features */}
-      <circle cx="80" cy="90" r="5" fill="#1a202c" />
-      <circle cx="120" cy="90" r="5" fill="#1a202c" />
-      <path d="M95,100 L90,115 L105,115 Z" fill="#e2e8f0" opacity="0.5" /> {/* Nose */}
+      {/* Face Features */}
+      <circle cx="80" cy="100" r="5" fill="#1a202c" />
+      <circle cx="120" cy="100" r="5" fill="#1a202c" />
+      <path d="M95,110 L90,125 L105,125 Z" fill="#e2e8f0" opacity="0.5" /> 
 
-      {/* Mouth (Animated) */}
-      {talking ? (
-        <ellipse cx="100" cy="130" rx="10" ry="8" fill="#742a2a">
-          <animate attributeName="ry" values="2;8;2" dur="0.2s" repeatCount="indefinite" />
-        </ellipse>
-      ) : (
-        <path d="M90,130 Q100,135 110,130" stroke="#742a2a" strokeWidth="3" fill="none" />
-      )}
-      
-      {/* Badge Name */}
-      <text x="130" y="190" fontSize="10" fill="white" fontFamily="monospace">GAGNON</text>
-    </svg>
-  </div>
+      {/* Chest/Body */}
+      <path d="M30,160 L170,160 L180,210 L20,210 Z" fill="#1a202c" />
+      
+      {/* Tie/Shirt Detail */}
+      <rect x="95" y="160" width="10" height="50" fill="#cbd5e0" />
+      <path d="M100,160 L100,210" stroke="#718096" strokeWidth="1" />
+      
+      {/* Shoulders */}
+      <path d="M40,160 Q30,150 20,170 L20,210 L60,210 Z" fill="#2d3748" />
+      <path d="M160,160 Q170,150 180,170 L180,210 L140,210 Z" fill="#2d3748" />
+      
+      {/* NEW: Desk/Table (Covers the gap at the very bottom) */}
+      <rect x="0" y="195" width="200" height="15" fill="#2d3748" />
+      <rect x="0" y="195" width="200" height="2" fill="#4a5568" /> {/* Table Edge highlight */}
+
+      {/* Mouth */}
+      {talking ? (
+        <ellipse cx="100" cy="140" rx="10" ry="8" fill="#742a2a">
+          <animate attributeName="ry" values="2;8;2" dur="0.2s" repeatCount="indefinite" />
+        </ellipse>
+      ) : (
+        <path d="M90,140 Q100,145 110,140" stroke="#742a2a" strokeWidth="3" fill="none" />
+      )}
+      
+      {/* Badge Name (Raised slightly to sit above the table) */}
+      <text x="125" y="182" fontSize="10" fill="white" fontFamily="monospace" fontWeight="bold">GAGNON</text>
+    </svg>
+  </div>
 );
 
 // 2. TYPEWRITER TEXT
@@ -556,14 +563,14 @@ export default function App() {
         next: 22 
     },
     {
-        text: "Just so you know, almost all applicants can't even get more than three years of experience counted. And full-time work during studies, like co-op? Doesn't count at all.",
+        text: "Just so you know, almost all applicants can't even get more than three years of experience counted. And full-time work during studies, like co-op? Doesn't count at all for the general economic stream.",
         type: 'statement',
         next: 23 
     },
     {
         text: "Almost done. Do you have a sibling who is a citizen or PR living in Canada?",
         type: 'choice',
-        options: [ {label:"Yes (15 pts)", val:true}, {label:"No (0 pts)", val:false} ],
+        options: [ {label:"Yes", val:true}, {label:"No", val:false} ],
         field: 'siblingInCanada',
         next: 24 
     },
@@ -630,8 +637,8 @@ export default function App() {
 
   if (scene === 'intro') {
     return (
-        <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-6 font-sans">
-            <div className="max-w-2xl bg-white rounded-sm shadow-2xl p-8 border-t-8 border-red-700">
+        <div className="min-h-screen bg-[#6e2e2e] flex flex-col items-center justify-center p-6 font-sans">
+            <div className="max-w-2xl bg-[#e9dace] rounded-sm shadow-2xl p-8 border-t-8 border-[#7b3f39]">
                 <h1 className="text-4xl font-extrabold text-gray-900 mb-6">Immigrate to Canada 2025</h1>
                 <p className="text-gray-700 text-lg mb-4 italic">
                     "If you were born and raised in Canada, you've probably never interacted with the immigration system. You might have heard in school that Canada's immigration system is fair, and brings in people from across the world that are ready to contribute most to the country."
@@ -641,7 +648,7 @@ export default function App() {
                 </p>
                 <button 
                     onClick={handleStart}
-                    className="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-4 text-xl tracking-widest uppercase transition-transform transform hover:scale-105"
+                    className="w-full bg-[#6e2e2e] hover:bg-red-800 text-white font-bold py-4 text-xl tracking-widest uppercase transition-transform transform hover:scale-105"
                 >
                     Start Interview
                 </button>
@@ -672,7 +679,7 @@ export default function App() {
       }, 3000);
 
       return (
-        <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center">
+        <div className="min-h-screen bg-[#6e2e2e] flex flex-col items-center justify-center">
             <OfficerGagnon talking={false} />
             <div className="mt-8 text-white text-2xl animate-pulse font-mono">
                 Officer Gagnon is reviewing your file...
@@ -696,10 +703,10 @@ export default function App() {
       });
 
       return (
-          <div className="min-h-screen bg-gray-800 flex flex-col items-center p-4">
+          <div className="min-h-screen bg-[#6e2e2e] flex flex-col items-center p-4">
                {/* STAMP ANIMATION */}
               <div className="fixed bottom-20 right-[25%] pointer-events-none z-50 ${stamp ? 'animate-bounce' : ''}">
-                   <div className={`border-8 text-8xl font-black p-10 transform -rotate-12 opacity-90 ${stamp==='PASS' ? 'border-green-600 text-green-600' : 'border-red-600 text-red-600'}`}>
+                   <div className={`border-8 text-8xl font-black p-10 transform -rotate-12 opacity-90 ${stamp==='PASS' ? 'border-green-600 text-green-600' : 'border-[#9e3737] text-red-600'}`}>
                        {stamp}
                    </div>
                </div>
@@ -738,7 +745,7 @@ export default function App() {
                            <ScoreRow label="French Language Bonus" points={scoreData.frenchBonus} />
                            <ScoreRow label="Sibling in Canada" points={scoreData.sibling} />
                            
-                           <div className="bg-red-700 text-white font-bold p-2 mt-4 flex justify-between">
+                           <div className="bg-[#a84950] text-white font-bold p-2 mt-4 flex justify-between">
                                <span>TOTAL CRS SCORE:</span>
                                <span>{score} / 1200</span>
                            </div>
@@ -749,7 +756,7 @@ export default function App() {
                            <h3 className="font-bold text-gray-500 uppercase tracking-widest mb-4">Eligible Streams & Past Draws</h3>
                            <div className="space-y-3 h-64 overflow-y-auto">
                                {relevantDraws.map((d, i) => (
-                                   <div key={i} className={`flex justify-between p-3 border-l-4 ${score >= d.score ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}`}>
+                                   <div key={i} className={`flex justify-between p-3 border-l-4 ${score >= d.score ? 'border-green-500 bg-green-50' : 'border-[#9e3737] bg-[#debed2]'}`}>
                                        <div>
                                            <span className="font-bold">{d.date}</span> - <span className="text-gray-600">{d.cat}</span>
                                        </div>
@@ -778,7 +785,7 @@ export default function App() {
                    <div className="mt-8 flex justify-center">
                        <button
                            onClick={() => handleNext('restart')}
-                           className="bg-red-700 text-white px-12 py-4 text-xl font-bold rounded hover:bg-red-800 transition duration-150"
+                           className="bg-[#a84950] text-white px-12 py-4 text-xl font-bold rounded hover:bg-[#9e3737] transition duration-150"
                        >
                            Restart Interview
                        </button>
@@ -793,7 +800,7 @@ export default function App() {
   const currentStep = SCRIPT[scriptIndex];
   
   return (
-    <div className="min-h-screen bg-red-900 flex flex-col justify-between font-sans relative overflow-hidden">
+    <div className="min-h-screen bg-[#6e2e2e] flex flex-col justify-between font-sans relative overflow-hidden">
         {/* Background Elements */}
         <div className="absolute inset-0 opacity-10 pointer-events-none flex items-center justify-center">
             <span className="text-9xl font-black text-white">CANADA</span>
@@ -805,7 +812,7 @@ export default function App() {
         </div>
 
         {/* Dialogue Box */}
-        <div className="bg-white-100 border-t-8 border-red-700 p-6 md:p-10 min-h-[300px] shadow-2xl relative z-10">
+        <div className="bg-[#f5ece4] border-t-8 border-[#7b3f39] p-6 md:p-10 min-h-[300px] shadow-2xl relative z-10">
             <div className="max-w-4xl mx-auto">
                 <div className="mb-4 text-red-700 font-bold uppercase tracking-widest text-sm">
                     Officer Gagnon
@@ -825,7 +832,7 @@ export default function App() {
               <button
                 key={option.label}
                 onClick={() => handleNext(option.val)}
-                className="bg-blue-600 text-white font-semibold py-3 px-4 rounded hover:bg-blue-700 transition"
+                className="bg-[#6e2e2e] text-white font-semibold py-3 px-4 rounded hover:bg-[#6e2e2e] transition"
               >
                 {option.label}
               </button>
@@ -841,11 +848,11 @@ export default function App() {
             }} className="mt-8 flex space-x-2">
                 <input 
                     type={currentStep.field === 'age' || currentStep.field === 'workInCanada' || currentStep.field === 'workForeign' ? 'number' : 'text'}
-                    className="flex-1 p-3 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
+                    className="flex-1 p-3 border border-gray-300 rounded focus:ring-[#6e2e2e] focus:border-[#6e2e2e]"
                     required
                     placeholder="Enter your answer..."
                 />
-                <button type="submit" className="bg-blue-600 text-white font-semibold py-3 px-6 rounded hover:bg-blue-700 transition">
+                <button type="submit" className="bg-[#6e2e2e] text-white font-semibold py-3 px-6 rounded hover:bg-[#6e2e2e] transition">
                     Submit
                 </button>
             </form>
@@ -855,7 +862,7 @@ export default function App() {
             <div className="mt-8 flex justify-center">
                 <button 
                     onClick={() => handleNext(null)}
-                    className="bg-gray-700 text-white font-semibold py-3 px-6 rounded hover:bg-gray-800 transition"
+                    className="bg-[#6e2e2e] text-white font-semibold py-3 px-6 rounded hover:bg-[#6e2e2e] transition"
                 >
                     Continue
                 </button>
