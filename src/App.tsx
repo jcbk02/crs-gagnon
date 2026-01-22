@@ -160,7 +160,7 @@ const calculateScore = (p: UserProfile): ScoreBreakdown => {
     let transferabilityPoints = 0;
     let additionalPoints = 0;
     
-    // A. AGE (Using existing simplified logic)
+    // A. AGE 
     const ageMapSingle: any = { 18:99, 19:105, 20:110, 29:110, 30:105, 31:99, 32:94, 33:88, 34:83, 35:77, 40:50, 44:6, 45:0 };
     const ageMapSpouse: any = { 18:90, 19:95, 20:100, 29:100, 30:95, 31:90, 32:85, 33:80, 34:75, 35:70, 40:45, 44:5, 45:0 };
     if(p.age >= 20 && p.age <= 29) agePoints = withSpouse ? 100 : 110;
@@ -171,7 +171,7 @@ const calculateScore = (p: UserProfile): ScoreBreakdown => {
     }
     agePoints = Math.max(0, agePoints);
 
-    // B. EDUCATION (Using existing simplified logic)
+    // B. EDUCATION 
     const eduScore = { 'None':0, 'Secondary':30, 'OneYear':90, 'TwoYear':98, 'ThreeYear':120, 'TwoOrMore':128, 'Masters':135, 'PhD':150 };
     const eduScoreSpouse = { 'None':0, 'Secondary':28, 'OneYear':84, 'TwoYear':91, 'ThreeYear':112, 'TwoOrMore':119, 'Masters':126, 'PhD':140 };
     educationPoints = withSpouse ? (eduScoreSpouse[p.education as keyof typeof eduScoreSpouse] || 0) : (eduScore[p.education as keyof typeof eduScore] || 0);
@@ -346,7 +346,7 @@ const ScoreRow = ({ label, points, max }: { label: string; points: number; max?:
 
 export default function App() {
   const [scene, setScene] = useState<Scene>('intro'); // Using the defined Scene type
-  const [scriptIndex, setScriptIndex] = useState(initialScriptIndex); // Using initialScriptIndex
+  const [scriptIndex, setScriptIndex] = useState(initialScriptIndex); 
   const [profile, setProfile] = useState<UserProfile>(initialProfile);
   const [isTalking, setIsTalking] = useState(false);
   const [canInput, setCanInput] = useState(false);
@@ -363,7 +363,7 @@ export default function App() {
     // Dependency is scriptIndex, so it runs every time we move to the next step.
   }, [scriptIndex, scene]);
 
-  // --- SCRIPT DEFINITION (Omitted for brevity, but remains unchanged) ---
+  // --- SCRIPT DEFINITION ---
   const SCRIPT: ScriptStep[] = [
     // 0: Intro
     {
@@ -371,7 +371,6 @@ export default function App() {
         type: 'statement',
         next: 1
     },
-    // 1: Category
     {
         text: "Are you a skilled tradesperson, a manager, or are you in the general pool of workers?",
         type: 'choice',
@@ -384,7 +383,6 @@ export default function App() {
         field: 'category',
         next: 2
     },
-    // 2: Marital
     {
         text: "Are you married or single?",
         type: 'choice',
@@ -395,7 +393,6 @@ export default function App() {
         ],
         field: 'maritalStatus'
     },
-    // 3: Spouse Canadian?
     {
         text: "Is your partner Canadian?",
         type: 'choice',
@@ -405,14 +402,12 @@ export default function App() {
         ],
         field: 'spouseCanadian'
     },
-    // 4: Spouse Work
     {
         text: "How many years of work experience do they have IN Canada?",
         type: 'input',
         field: 'spouseWorkInCanada',
         next: 5
     },
-    // 5: Spouse Lang Selection
     {
         text: "Do they speak English or French as their first language?",
         type: 'choice',
@@ -423,7 +418,6 @@ export default function App() {
         // Just dummy state update, mapped to logic later
         next: 6
     },
-    // 6: Spouse Fluency
     {
         text: "How fluent are they in their first language?",
         type: 'choice',
@@ -438,7 +432,6 @@ export default function App() {
             setProfile(prev => ({...prev, spouseEnglish: { speak: clb, listen: clb, read: clb, write: clb }}));
         }
     },
-    // 7: Spouse Second Lang Check
     {
         text: "Do they speak the other official language (English/French) as a second language?",
         type: 'choice',
@@ -447,7 +440,6 @@ export default function App() {
             { label: "No", val: false, jump: 9 }
         ]
     },
-    // 8: Spouse Second Lang Ease
     {
         text: "How easily would they be able to live by themselves in a country only using their second language?",
         type: 'choice',
@@ -457,17 +449,14 @@ export default function App() {
             { label: "Somewhat Easily", val: 'Somewhat Easily', next: 9 },
             { label: "Not Easily", val: 'Not Easily', next: 9 },
         ],
-        // Logic omitted for spouse 2nd lang points in this quick mock, but flow exists
         next: 9
     },
-    // 9: Spouse Accompanying (Implicitly yes if we got here)
     {
         text: "I see. Let's move on to you.",
         type: 'statement',
         setter: () => setProfile(prev => ({...prev, spouseAccompanying: true })),
         next: 10
     },
-    // 10: First Language
     {
         text: "What is your first language?",
         type: 'choice',
@@ -478,7 +467,6 @@ export default function App() {
         ],
         field: 'firstLanguage'
     },
-    // 11: First Lang Confidence
     {
         text: "How confident are you in your first official language (English or French)?",
         type: 'choice',
@@ -493,7 +481,6 @@ export default function App() {
             setProfile(prev => ({...prev, english: { speak: clb, listen: clb, read: clb, write: clb }}));
         }
     },
-    // 12: Second Lang Check
     {
         text: "Is your second language (if you have one), English or French?",
         type: 'choice',
@@ -502,7 +489,6 @@ export default function App() {
             { label: "No", val: false, jump: 15 } // Skip to comment
         ]
     },
-    // 13: Second Lang Ease
     {
         text: "How easily would you be able to live by yourself in a country only using your second language?",
         type: 'choice',
@@ -517,20 +503,17 @@ export default function App() {
             setProfile(prev => ({...prev, french: { speak: clb, listen: clb, read: clb, write: clb }}));
         }
     },
-    // 14: Lang Exam Comment
     {
         text: "You know, simply saying you speak it isn't enough. You must take a licensed language exam and pay out of your own pocket to prove it.",
         type: 'statement',
         next: 15
     },
-    // 15: Age
     {
         text: "Now, how old are you?",
         type: 'input',
         field: 'age',
         next: 16
     },
-    // 16: Education
     {
         text: "What is your highest level of education?",
         type: 'choice',
@@ -538,14 +521,12 @@ export default function App() {
         field: 'education',
         next: 17
     },
-    // 17: Institution (Flavor)
     {
         text: "And what specific institution did you study at?",
         type: 'input',
         dummy: true, 
         next: 18 
     },
-    // 18: NEW - Canadian Education
     {
         text: "Did you complete any post-secondary education in Canada?",
         type: 'choice',
@@ -557,33 +538,28 @@ export default function App() {
         field: 'canadianEducation',
         next: 19 
     },
-    // 19: Diploma Mill Comment (Old 18)
     {
         text: "Hmph. It doesn't matter where you went to school in Canada. The only thing that matters is the length and field. Your application gets the same points if you're from UofT or from a diploma mill college.",
         type: 'statement',
         next: 20 
     },
-    // 20: Cdn Work (Old 19)
     {
         text: "How many years of skilled work experience do you have INSIDE Canada?",
         type: 'input',
         field: 'workInCanada',
         next: 21 
     },
-    // 21: Foreign Work (Old 20)
     {
         text: "How many years of skilled work experience do you have OUTSIDE Canada?",
         type: 'input',
         field: 'workForeign',
         next: 22 
     },
-    // 22: Work Comment (Old 21)
     {
         text: "Just so you know, almost all applicants can't even get more than three years of experience counted. And full-time work during studies, like co-op? Doesn't count at all.",
         type: 'statement',
         next: 23 
     },
-    // 23: Siblings (Old 22)
     {
         text: "Almost done. Do you have a sibling who is a citizen or PR living in Canada?",
         type: 'choice',
@@ -591,7 +567,6 @@ export default function App() {
         field: 'siblingInCanada',
         next: 24 
     },
-    // 24: PNP (Old 23)
     {
         text: "Do you have a Provincial Nomination Certificate? (This is worth 600 points!)",
         type: 'choice',
@@ -599,7 +574,6 @@ export default function App() {
         field: 'pnp',
         next: 25 
     },
-    // 25: Trade Cert (Old 24)
     {
         text: "Do you have a Certificate of Qualification in a trade issued by a Canadian province?",
         type: 'choice',
@@ -617,7 +591,6 @@ export default function App() {
   };
 
   const handleNext = (val?: any) => {
-    // 🛑 FIX 3: RESTART LOGIC - Check for 'restart' and use corrected initial values
     if (val === 'restart') {
         setProfile(initialProfile);       
         setScriptIndex(initialScriptIndex); 
@@ -820,7 +793,7 @@ export default function App() {
   const currentStep = SCRIPT[scriptIndex];
   
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col justify-between font-sans relative overflow-hidden">
+    <div className="min-h-screen bg-red-900 flex flex-col justify-between font-sans relative overflow-hidden">
         {/* Background Elements */}
         <div className="absolute inset-0 opacity-10 pointer-events-none flex items-center justify-center">
             <span className="text-9xl font-black text-white">CANADA</span>
@@ -832,7 +805,7 @@ export default function App() {
         </div>
 
         {/* Dialogue Box */}
-        <div className="bg-white border-t-8 border-red-700 p-6 md:p-10 min-h-[300px] shadow-2xl relative z-10">
+        <div className="bg-white-100 border-t-8 border-red-700 p-6 md:p-10 min-h-[300px] shadow-2xl relative z-10">
             <div className="max-w-4xl mx-auto">
                 <div className="mb-4 text-red-700 font-bold uppercase tracking-widest text-sm">
                     Officer Gagnon
