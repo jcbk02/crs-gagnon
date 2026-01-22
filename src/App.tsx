@@ -550,9 +550,9 @@ export default function App() {
         text: "Did you complete any post-secondary education in Canada?",
         type: 'choice',
         options: [
-            { label: "Yes, credential of 3 years or longer (30 pts)", val: '3YearOrMore' },
-            { label: "Yes, credential of 1 or 2 years (15 pts)", val: '1or2Year' },
-            { label: "No (0 pts)", val: 'None' }
+            { label: "Yes, credential of 3 years or longer", val: '3YearOrMore' },
+            { label: "Yes, credential of 1 or 2 years", val: '1or2Year' },
+            { label: "No", val: 'None' }
         ],
         field: 'canadianEducation',
         next: 19 
